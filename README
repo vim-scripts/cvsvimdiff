@@ -1,0 +1,5 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1209
+
+Perform cvs diff invoking vimdiff.
+
+This script does not aim at supporting cvs as vimscript #90, it simply enables people acquainted with "cvs diff" to see its output in a handier way.
