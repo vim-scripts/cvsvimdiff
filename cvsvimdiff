@@ -11,10 +11,15 @@
 
 vimdiff="vimdiff"
 suffix="vimcvsdiff"
+rev="HEAD"
 
 if [ "$1" == "-g" ] ; then
   vimdiff="gvimdiff -f"
   shift 1
+fi
+if [ "$1" == "-r" ]; then
+  rev="$2"
+  shift 2
 fi
 
 files="$1"
@@ -23,12 +28,12 @@ if [ -z "$files" ]; then
 fi
 for f in $files; do
   if ! [ -f $f ]; then break; fi
-  patch=`tempfile -p $suffix`
-  orig=`tempfile -p $suffix`
+  patch=`mktemp $prefix.XXXXXX`
+  orig=`mktemp $prefix.XXXXXX`
   trap "rm -f $patch $orig" EXIT
   cp "$f" $orig
   cut -d '/' -f 2 < CVS/Entries | grep "^$f\$" > /dev/null || break
-  cvs diff -r HEAD -u "$f" > $patch
+  cvs diff -r $rev -u "$f" > $patch
   if ! [ $? -eq 1 ]; then break; fi
   cp "$f" $orig
   patch -R -p0 $orig $patch
